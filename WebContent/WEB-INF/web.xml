@@ -14,7 +14,16 @@ id="WebApp_ID" version="4.0" metadata-complete="false">
   	<servlet-name>na</servlet-name>
   	<url-pattern>/hello</url-pattern>
   </servlet-mapping> -->
-  
+  <!--  
+  <filter>
+  	<filter-name>characterEncodingFilter</filter-name>
+  	<filter-class>com.lsj.web.filter.CharacterEncodingFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>characterEncodingFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  -->
   
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
