@@ -4,17 +4,27 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<script type="text/javascript">
+function addInput(){
+	var divs = document.getElementById("divs");
+	var temp = document.createElement("input");
+	temp.type = "text";
+	temp.name = "value";
+	divs.appendChild(temp);
+}
+</script>
 <body>
-<form action="/add" method="post">
+<form action="/add2" method="post">
 <div>
 	<label>계산할 값을 입력하세요.</label>
 </div>
-<div>
-	<input type="text" name="value1" /> 
-	<input type="text" name="value2" />
+<div id="divs">
+	<input type="text" name="value" /> 
+	<input type="text" name="value" />
 </div>
 <div>
 	<input type="submit" />
+	<input type="button" onclick="addInput()" value="추가">
 </div>
 </form>
 </body>
