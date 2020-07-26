@@ -25,7 +25,7 @@ public class CalcClass3 extends HttpServlet{
 		// TODO Auto-generated method stub
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("text/html; charset=UTF-8");
-
+		
 		String value = req.getParameter("value");
 		String operator = req.getParameter("operator");
 		String dot = req.getParameter("dot");
@@ -56,9 +56,10 @@ public class CalcClass3 extends HttpServlet{
 			exp += operator == null ? "" : operator;
 			exp += dot == null ? "" : dot;
 		}
-		
 		Cookie valueCookie = new Cookie("exp", exp);
-		
+		if(operator != null && operator.equals("C")) {
+			valueCookie.setMaxAge(0);
+		}
 		res.addCookie(valueCookie);
 		res.sendRedirect("/calcpage");
 	}

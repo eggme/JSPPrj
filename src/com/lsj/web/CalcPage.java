@@ -3,6 +3,9 @@ package com.lsj.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -19,6 +22,11 @@ public class CalcPage extends HttpServlet{
 
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		super.service(req, res);
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("text/html; charset=UTF-8");
@@ -56,14 +64,14 @@ public class CalcPage extends HttpServlet{
 				"		}\r\n" + 
 				"		</style>\r\n" + 
 				"		<body>\r\n" + 
-				"		<form action=\"/calc3\" method=\"post\">\r\n" + 
+				"		<form action=\"/calcpage\" method=\"post\">\r\n" + 
 				"			<table>\r\n" + 
 				"				<tr>\r\n" + 
 				"					<td colspan=\"4\" class=\"output\">"+ exp +"</td>\r\n" + 
 				"				</tr>\r\n" + 
 				"				<tr>\r\n" + 
 				"					<td><input type=\"submit\" value=\"CE\" name=\"CE\"/></td>\r\n" + 
-				"					<td><input type=\"submit\" value=\"C\" name=\"C\"/></td>\r\n" + 
+				"					<td><input type=\"submit\" value=\"C\" name=\"operator\"/></td>\r\n" + 
 				"					<td><input type=\"submit\" value=\"BS\" name=\"BS\"/></td>\r\n" + 
 				"					<td><input type=\"submit\" value=\"/\" name=\"operator\"/></td>\r\n" + 
 				"				</tr>\r\n" + 
@@ -97,5 +105,55 @@ public class CalcPage extends HttpServlet{
 		writer.print(page);
 		
 	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("text/html; charset=UTF-8");
+		
+		String value = req.getParameter("value");
+		String operator = req.getParameter("operator");
+		String dot = req.getParameter("dot");
+		
+		Cookie[] cookies = req.getCookies();
+		String exp = "";
+		if(cookies != null) {
+			for(Cookie c : cookies) {
+				if(c.getName().equals("exp")) {
+					exp = c.getValue();
+					break;
+				}
+			}
+		}
+		
+		if(operator != null && operator.equals("=")) {
+			ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+			// javascript nashorn 엔진
+			try {
+				exp = String.valueOf(engine.eval(exp));
+				// 자바스크립트 실행
+			} catch (ScriptException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else if(operator != null && operator.equals("C")){
+			exp = "";
+		}else {
+			exp += value == null ? "" : value;
+			exp += operator == null ? "" : operator;
+			exp += dot == null ? "" : dot;
+		}
+		Cookie valueCookie = new Cookie("exp", exp);
+		if(operator != null && operator.equals("C")) {
+			valueCookie.setMaxAge(0);
+		}
+		valueCookie.setPath("/calcpage");
+		res.addCookie(valueCookie);
+		res.sendRedirect("/calcpage");
+	}
+	
+	
+	
 }
 
