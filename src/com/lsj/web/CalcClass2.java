@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +30,33 @@ public class CalcClass2 extends HttpServlet{
 		ServletContext application = req.getServletContext();
 		// ServletContext -> 컬렉션이라고 생각
 		
+		int data = 0;
+		int result = 0;
 		// Session
 		HttpSession session = req.getSession();
+		Cookie[] cookies = req.getCookies();
+		for(Cookie c : cookies) {
+			if(c != null) {
+				if(c.getName().equals("value")) {
+					data = Integer.parseInt(c.getValue());
+				}else if(c.getName().equals("oper")) {
+					if(c.getName().equals("+")) {
+						result = Integer.parseInt(value) + data;
+						data = 0;
+					}else if(c.getName().equals("-")){
+						result = Integer.parseInt(value) - data;
+						data = 0;
+					}else {
+						writer.print("result : " + result);
+					}
+				}
+			}
+		}
+		// Cookie
+		Cookie valueCookie = new Cookie("value", value);
+		Cookie operCookie = new Cookie("oper", oper);
+		res.addCookie(valueCookie);
+		res.addCookie(operCookie);
 		// application
 		/* 
 		if(oper.equals("=")){
@@ -91,3 +117,4 @@ public class CalcClass2 extends HttpServlet{
 		} 
 	}
 }
+
